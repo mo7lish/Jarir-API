@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jarir Retail Intelligence</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Jarir Retail Intelligence</h1>
+      <p class="subtitle">Search products, check prices, and find branch availability in real-time</p>
+    </header>
+
+    <main>
+      <!-- Step 1: Product Search -->
+      <section id="search-section" class="step active">
+        <h2>Search Product</h2>
+        <div class="search-box">
+          <input 
+            type="text" 
+            id="product-search" 
+            placeholder="e.g. iPhone 15 Pro, iPad Air, Sony headphones…"
+            autocomplete="off"
+          >
+          <button id="search-btn">Search</button>
+        </div>
+        <div class="search-options">
+          <label for="max-products">Max products to show:</label>
+          <select id="max-products">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+        <p class="hint">English product names only</p>
+      </section>
+
+      <!-- Step 2: Product Selection -->
+      <section id="product-section" class="step hidden">
+        <h2>Select Product</h2>
+        <div id="products-list" class="list"></div>
+        <button id="back-to-search" class="back-btn">← Back to Search</button>
+      </section>
+
+      <!-- Step 3: Product Details -->
+      <section id="product-details-section" class="step hidden">
+        <h2>Product Details</h2>
+        <div id="product-info" class="product-info"></div>
+        <button id="check-availability-btn" class="primary-btn">Check Branch Availability</button>
+        <button id="back-to-products" class="back-btn">← Back to Products</button>
+      </section>
+
+      <!-- Step 4: City Selection -->
+      <section id="city-section" class="step hidden">
+        <h2>Select City</h2>
+        <div id="cities-list" class="list"></div>
+        <button id="back-to-details" class="back-btn">← Back to Product</button>
+      </section>
+
+      <!-- Step 5: Branch Selection -->
+      <section id="branch-section" class="step hidden">
+        <h2>Select Branch</h2>
+        <div id="branches-list" class="list"></div>
+        <button id="back-to-city" class="back-btn">← Back to Cities</button>
+      </section>
+
+      <!-- Step 6: Availability Results -->
+      <section id="availability-section" class="step hidden">
+        <h2>Branch Availability</h2>
+        <div id="availability-info" class="availability-info"></div>
+        <button id="back-to-branch" class="back-btn">← Back to Branches</button>
+        <button id="new-search" class="primary-btn">New Search</button>
+      </section>
+
+      <!-- Loading Indicator -->
+      <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+      </div>
+
+      <!-- Error Message -->
+      <div id="error" class="error hidden"></div>
+    </main>
+
+    <!-- Info Section -->
+    <footer>
+      <details>
+        <summary>How This Works</summary>
+        <div class="info-content">
+          <h3>Complete Overview</h3>
+          <p>This tool uses Jarir's public website APIs to fetch real-time product pricing and branch-level availability.</p>
+
+          <h4>How the APIs Were Found</h4>
+          <ol>
+            <li>Opened product pages on Jarir's website</li>
+            <li>Opened Chrome DevTools → Network tab</li>
+            <li>Filtered by Fetch/XHR to inspect API calls</li>
+            <li>Identified multiple endpoints:
+              <ul>
+                <li><strong>Search API:</strong> Returns product name and SKU</li>
+                <li><strong>Product API:</strong> Returns full product details and final customer-visible price</li>
+                <li><strong>Availability API:</strong> Returns branch-level stock availability and collection ETA</li>
+                <li><strong>Master Data API:</strong> Contains all branch locations with city codes and district IDs</li>
+              </ul>
+            </li>
+          </ol>
+
+          <h4>How It Works</h4>
+          <ol>
+            <li>User enters a product name</li>
+            <li>The app calls the search API to retrieve matching products</li>
+            <li>User manually selects the correct product from the list</li>
+            <li>The app calls the product API using the selected SKU to get the final discounted price</li>
+            <li>User selects their city from available Saudi cities</li>
+            <li>User selects a branch in that city</li>
+            <li>The app calls the availability API with the SKU, branch code, city code, and district ID</li>
+            <li>Real-time availability status and collection ETA are displayed</li>
+          </ol>
+
+          <h4>Why This Approach</h4>
+          <ul>
+            <li>Uses the same APIs the website itself uses</li>
+            <li>Fetches live, real-time pricing and availability</li>
+            <li>Ensures the actual final customer-visible price is returned</li>
+            <li>Provides branch-specific availability and collection times</li>
+            <li>No scraping — only structured API responses</li>
+          </ul>
+
+          <h4>Technical Details</h4>
+          <p>The availability API requires three matching parameters that must all belong to the same branch:</p>
+          <ul>
+            <li><code>showroom_code</code> - The branch identifier</li>
+            <li><code>city_code</code> - The city code (e.g., "RUH" for Riyadh)</li>
+            <li><code>district_id</code> - The district identifier</li>
+          </ul>
+          <p>If these don't match, the API returns null. The master data ensures all three values are correctly paired for each branch.</p>
+        </div>
+      </details>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

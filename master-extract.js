@@ -1,10 +1,9 @@
-// master-extract.js
+import fs from "fs/promises";
 
 async function loadBranches() {
   const raw = await fs.readFile("master_data.json", "utf8");
   const json = JSON.parse(raw);
 
-  // `master_data.json` (from Jarir) has `data` as a big array that mixes many record shapes.
   const items = Array.isArray(json.data) ? json.data : [];
 
   const centres = items.filter(
@@ -23,7 +22,6 @@ async function loadBranches() {
       Object.prototype.hasOwnProperty.call(x, "default_city_name")
   );
 
-  // Build city_id → city_name map
   const cityMap = {};
   cities.forEach((c) => {
     const en = c.locales?.find((l) => l.locale === "en_US");
@@ -54,16 +52,15 @@ async function loadBranches() {
     return null;
   }
 
-  // Map city names to city codes (IATA/airport codes for major Saudi cities)
   function getCityCode(cityName) {
     if (!cityName || typeof cityName !== "string") return null;
     const normalized = cityName.toLowerCase().trim();
-    
+
     const cityCodeMap = {
       riyadh: "RUH",
       jeddah: "JED",
       dammam: "DMM",
-      khobar: "DMM", // Al Khobar uses Dammam airport
+      khobar: "DMM",
       "al khobar": "DMM",
       dhahran: "DMM",
       madinah: "MED",
@@ -93,12 +90,10 @@ async function loadBranches() {
       yanbu: "YNB",
     };
 
-    // Try exact match first
     if (cityCodeMap[normalized]) {
       return cityCodeMap[normalized];
     }
 
-    // Try partial match
     for (const [key, code] of Object.entries(cityCodeMap)) {
       if (normalized.includes(key) || key.includes(normalized)) {
         return code;
@@ -108,9 +103,7 @@ async function loadBranches() {
     return null;
   }
 
-  // Extract only what you need (shape requested)
   const branches = centres
-    // Saudi branches only (country_id 181) and active
     .filter((c) => c.country_id === 181 && c.status === 1 && c.code)
     .map((c) => {
       const en = c.locales?.find((l) => l.locale === "en_US");
@@ -121,16 +114,14 @@ async function loadBranches() {
         inferCityFromName(name) || inferCityFromAddress(address);
       const city = cityMap[c.city_id] || inferredCity || "Unknown";
 
-      // Clean name: remove city suffix if present (e.g., "Name - City" -> "Name")
       let cleanName = name;
       if (inferredCity && name.includes(" - ")) {
         const parts = name.split(" - ");
         const lastPart = parts[parts.length - 1]?.trim();
-        // If last part matches the inferred city, remove it
         if (
           lastPart &&
-          city.toLowerCase().includes(lastPart.toLowerCase()) ||
-          lastPart.toLowerCase().includes(city.toLowerCase())
+          (city.toLowerCase().includes(lastPart.toLowerCase()) ||
+          lastPart.toLowerCase().includes(city.toLowerCase()))
         ) {
           cleanName = parts.slice(0, -1).join(" - ").trim();
         }
@@ -148,17 +139,13 @@ async function loadBranches() {
   return branches;
 }
 
-// Optional: Save locally
-import fs from "fs/promises";
-
 async function main() {
   try {
     const branches = await loadBranches();
 
     console.log("Total branches:", branches.length);
-    console.log(branches.slice(0, 5)); // preview first 5
+    console.log(branches.slice(0, 5));
 
-    // Save to file
     await fs.writeFile(
       "branches.json",
       JSON.stringify(branches, null, 2)

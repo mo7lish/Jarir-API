@@ -1,62 +1,52 @@
 # Jarir Bookstore Search
 
-A web application that searches Jarir products, displays real-time pricing, and checks availability in Saudi Arabia branches.
+Check real-time product availability, pricing, and collection times across **78+ Jarir Bookstore branches** in Saudi Arabia.
 
-## Features
+**Live Demo:** [jarir-api.netlify.app](https://jarir-api.netlify.app)
 
-- 🔍 **Product Search** - Search products by name using Jarir's autocomplete API
-- 💰 **Real-time Pricing** - Get the actual final customer-visible price
-- 📍 **Branch Selection** - Select city and branch from all Saudi locations
-- ✅ **Availability Check** - Real-time stock availability and collection ETA for specific branches
+## What It Does
+
+Search any product sold at [Jarir Bookstore](https://www.jarir.com), see its current price, then check stock availability and estimated collection time at any branch across Saudi Arabia.
+
+**Supported cities include:** Riyadh, Jeddah, Dammam, Makkah, Madinah, Taif, Hail, Buraidah, Khamis Mushait, and many more.
+
+## How to Use
+
+1. **Search** for a product by name
+2. **Select** the product from the results
+3. **Pick your city** from the list of available locations
+4. **Choose a branch** to see real-time stock status and collection ETA
 
 ## How It Works
 
-This app uses Jarir's public REST APIs discovered through browser DevTools:
+The app calls Jarir's public REST APIs directly from the browser — no backend or API keys needed:
 
-1. **Search API** - Finds products by name
-2. **Product API** - Gets detailed product info and final price
-3. **Availability API** - Checks branch-specific stock and collection times
-4. **Master Data** - Contains all branch locations (loaded from `branches.json`)
+- **Search API** — product lookup via autocomplete
+- **Product API** — fetches final customer-visible pricing
+- **Availability API** — branch-level stock status and collection time estimates
 
-## Deployment
+Branch location data (showroom codes, city codes, district IDs) is maintained in `branches.json`.
 
-### Netlify
+## Running Locally
 
-1. Push this repository to GitHub
-2. Connect to Netlify
-3. Set build settings:
-   - Build command: (leave empty)
-   - Publish directory: `.` (root)
-4. Deploy!
+Clone the repo and open `index.html` in a browser, or use any local server:
 
-The `netlify.toml` file is already configured for static site deployment.
+```bash
+npx serve .
+```
 
-### Manual Deployment
-
-Simply upload all files to any static hosting service. The app works entirely client-side.
-
-## File Structure
-
-- `index.html` - Main HTML structure
-- `style.css` - Styling
-- `app.js` - Application logic
-- `branches.json` - Branch data (generated from master data)
-- `netlify.toml` - Netlify configuration
+No build step or dependencies required.
 
 ## Updating Branch Data
 
-To update `branches.json` with latest branch data:
+If Jarir adds or changes branches, update `branches.json` by running:
 
 ```bash
 node master-extract.js
 ```
 
-This extracts branch information from `master_data.json` (which should be downloaded from Jarir's master data API).
+This extracts and maps branch data from Jarir's master data API response.
 
-## API Endpoints Used
+## License
 
-- Search: `https://ac.cnstrc.com/v1/autocomplete/{query}`
-- Product: `https://www.jarir.com/api/catalogv2/product/store/sa-en/sku/{sku}/size/1`
-- Availability: `https://www.jarir.com/api/v2/sa_en/stock/getETAPDPV2`
-
-All endpoints are public and used by Jarir's website.
+Open source. Use it however you like.

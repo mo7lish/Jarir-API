@@ -14,13 +14,12 @@
     </header>
 
     <main>
-      <!-- Step 1: Product Search -->
       <section id="search-section" class="step active">
         <h2>Search Product</h2>
         <div class="search-box">
-          <input 
-            type="text" 
-            id="product-search" 
+          <input
+            type="text"
+            id="product-search"
             placeholder="e.g. iPhone 15 Pro, iPad Air, Sony headphones…"
             autocomplete="off"
           >
@@ -39,14 +38,12 @@
         <p class="hint">English product names only</p>
       </section>
 
-      <!-- Step 2: Product Selection -->
       <section id="product-section" class="step hidden">
         <h2>Select Product</h2>
         <div id="products-list" class="list"></div>
         <button id="back-to-search" class="back-btn">← Back to Search</button>
       </section>
 
-      <!-- Step 3: Product Details -->
       <section id="product-details-section" class="step hidden">
         <h2>Product Details</h2>
         <div id="product-info" class="product-info"></div>
@@ -54,21 +51,18 @@
         <button id="back-to-products" class="back-btn">← Back to Products</button>
       </section>
 
-      <!-- Step 4: City Selection -->
       <section id="city-section" class="step hidden">
         <h2>Select City</h2>
         <div id="cities-list" class="list"></div>
         <button id="back-to-details" class="back-btn">← Back to Product</button>
       </section>
 
-      <!-- Step 5: Branch Selection -->
       <section id="branch-section" class="step hidden">
         <h2>Select Branch</h2>
         <div id="branches-list" class="list"></div>
         <button id="back-to-city" class="back-btn">← Back to Cities</button>
       </section>
 
-      <!-- Step 6: Availability Results -->
       <section id="availability-section" class="step hidden">
         <h2>Branch Availability</h2>
         <div id="availability-info" class="availability-info"></div>
@@ -76,17 +70,14 @@
         <button id="new-search" class="primary-btn">New Search</button>
       </section>
 
-      <!-- Loading Indicator -->
       <div id="loading" class="loading hidden">
         <div class="spinner"></div>
         <p>Loading...</p>
       </div>
 
-      <!-- Error Message -->
       <div id="error" class="error hidden"></div>
     </main>
 
-    <!-- Info Section -->
     <footer>
       <details>
         <summary>How This Works</summary>

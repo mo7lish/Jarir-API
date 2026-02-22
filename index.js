@@ -11,7 +11,6 @@ const PRODUCT_API =
 const ETA_API =
   "https://www.jarir.com/api/v2/sa_en/stock/getETAPDPV2";
 
-// ===== SEARCH =====
 async function searchProducts(query) {
   const url = SEARCH_API.replace("{query}", encodeURIComponent(query));
   const res = await fetch(url);
@@ -19,7 +18,6 @@ async function searchProducts(query) {
   return data.sections?.Products || [];
 }
 
-// ===== PRODUCT DETAILS =====
 async function getProductDetails(sku) {
   const url = PRODUCT_API.replace("{sku}", sku);
   const res = await fetch(url);
@@ -46,12 +44,11 @@ async function getProductDetails(sku) {
   };
 }
 
-// ===== AVAILABILITY =====
-async function checkAvailability(sku, showroom_code, city_code, district_id) {
+async function checkAvailability(sku, showroomCode, cityCode, districtId) {
   const params = new URLSearchParams({
     countryId: "SA",
-    city: city_code || "",
-    district: district_id || "",
+    city: cityCode || "",
+    district: districtId || "",
     sku: sku,
     qty: "1",
     mirakl_offer_id: "0",
@@ -59,7 +56,7 @@ async function checkAvailability(sku, showroom_code, city_code, district_id) {
     delivery_method: "COLLECTION",
     customer_group: "",
     type: "LIVE",
-    showroom_code: showroom_code,
+    showroom_code: showroomCode,
   });
 
   const url = `${ETA_API}?${params.toString()}`;
@@ -67,7 +64,6 @@ async function checkAvailability(sku, showroom_code, city_code, district_id) {
   const res = await fetch(url);
   const data = await res.json();
 
-  // Safe error handling: check success before accessing data
   if (!data.success || !data.data) {
     throw new Error(
       `Availability API error: ${data.message || "Invalid response"}`
@@ -77,7 +73,6 @@ async function checkAvailability(sku, showroom_code, city_code, district_id) {
   return data.data;
 }
 
-// ===== MAIN =====
 async function main() {
   const rl = readline.createInterface({ input, output });
   const branches = JSON.parse(
@@ -85,7 +80,6 @@ async function main() {
   );
 
   try {
-    // ===== PRODUCT SEARCH =====
     const query = await rl.question("Enter product name: ");
     const products = await searchProducts(query);
 
@@ -94,7 +88,6 @@ async function main() {
       return;
     }
 
-    // Let user choose product manually (no LLM)
     console.log("\nSelect Product:");
     products.forEach((p, i) => {
       console.log(`${i + 1}. ${p.data.description}`);
@@ -114,7 +107,6 @@ async function main() {
     console.log("\nProduct:", product.name);
     console.log("Final Price:", product.price, "SAR");
 
-    // ===== CITY SELECTION =====
     const cities = [...new Set(branches.map(b => b.city))];
 
     console.log("\nSelect City:");
@@ -140,7 +132,6 @@ async function main() {
       throw new Error(`No branches found in ${selectedCity}`);
     }
 
-    // ===== BRANCH SELECTION =====
     console.log(`\nBranches in ${selectedCity}:`);
     cityBranches.forEach((b, i) => {
       console.log(`${i + 1}. ${b.name}`);
@@ -156,14 +147,12 @@ async function main() {
 
     const selectedBranch = cityBranches[branchIndex];
 
-    // Validate branch has required fields
     if (!selectedBranch.city_code || !selectedBranch.district_id) {
       throw new Error(
         `Branch ${selectedBranch.name} is missing city_code or district_id`
       );
     }
 
-    // ===== AVAILABILITY =====
     const availability = await checkAvailability(
       sku,
       selectedBranch.showroom_code,

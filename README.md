@@ -1,6 +1,6 @@
-# Jarir Retail Intelligence
+# Jarir Bookstore Search
 
-A web application that searches Jarir products, displays real-time pricing, and checks branch-level availability across Saudi Arabia.
+A web application that searches Jarir products, displays real-time pricing, and checks availability in Saudi Arabia branches.
 
 ## Features
 

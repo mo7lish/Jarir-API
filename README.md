@@ -1,4 +1,4 @@
-# Jarir Retail Intelligence
+# Jarir Bookstore Search
 
 Check real-time product availability, pricing, and collection times across **78+ Jarir Bookstore branches** in Saudi Arabia.
 
